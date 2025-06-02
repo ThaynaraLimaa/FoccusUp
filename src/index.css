@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poiret+One&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Primary Shades  */
+  --color-primary-1: #453B57;
+  --color-primary-2: #675882;
+  --color-primary-3: #8A76AE;
+  --color-primary: #AC93D9;
+  --color-primary-5: #BDA9E1;
+  --color-primary-6: #CDBEE8;
+  --color-primary-7: #DED4F0;
+
+  /* Gray Shades */
+  --color-black: #110F16;
+  --color-black-75: #4B494E;
+  --color-black-50: #858387;
+  --color-black-25: #C3C3C4;
+  --color-black-10: #E3E2E3;
+  --color-black-5: #EDEDED;
+  --color-white: #FFFFFF; 
+
+  /* Fonts Family */
+  --ff-heading: "Poiret One", sans-serif;
+  --ff-body: "Montserrat", sans-serif;
+
+  /* Sizes */
+  --components-size: 70%;
+}
+
+
+body {
+  background-color: var(--color-primary-6);
+  color: var(--color-black);
+  font-family: var(--ff-body);
+  font-size: 1rem;
+}
+
+#root {
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  gap: 1rem;
+}
