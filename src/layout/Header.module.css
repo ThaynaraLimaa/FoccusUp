@@ -1,0 +1,16 @@
+.headerContainer {
+    width: var(--components-size);
+    padding: 1rem;
+    border: 1px solid var(--color-primary-2);
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    font-family: var(--ff-heading);
+    color: var(--color-white);
+    letter-spacing: 6px;
+    font-size: 2rem;
+}
