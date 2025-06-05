@@ -4,22 +4,27 @@ import { Slider } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { formatNumberDigits } from '../../utils/formatNumber';
+import { timeBasedGreeting } from '../../utils/timeBasedGreeting';
 
 type TimerState = 'stopped' | 'running' | 'paused'
 
-export default function Timer() {
+type TimerProps = {
+    username: string
+}
+
+export default function Timer({ username }: TimerProps) {
     const [circleDuration, setCircleDuration] = useState<number>(45);
-    const [timeLeft, setTimeLeft] = useState(0)
+    const [timeLeft, setTimeLeft] = useState(0);
     const [timerState, setTimerState] = useState<TimerState>('stopped');
-    const [endHour, setEndHour] = useState('')
-    const timerRef = useRef<number | null>(null)
+    const [endHour, setEndHour] = useState('');
+    const timerRef = useRef<number | null>(null);
 
     // To show an alert if user tries to close the tab when timer is running 
     useEffect(() => {
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
             if (timerState === 'running') {
                 event.preventDefault();
-                event.returnValue = ""; 
+                event.returnValue = "";
             }
         };
 
@@ -30,7 +35,6 @@ export default function Timer() {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
     }, [timerState]);
-
 
     // When circles ends 
     if (timeLeft == 0 && timerState == 'running') {
@@ -75,7 +79,7 @@ export default function Timer() {
         <>
             {timerState == 'stopped' ? (
                 <div className={styles.timerContainer}>
-                    <p className={styles.message}>Good Morning, NAME</p>
+                    <p className={styles.message}>{timeBasedGreeting()}, {username}</p>
                     <div className={styles.clock}>
                         {circleDuration}:00
                     </div>
@@ -93,9 +97,9 @@ export default function Timer() {
                 </div>
             ) : (
                 <div className={`${styles.timerContainer} ${styles.timerContainerFocusView}`}>
-                    <p className={styles.message}>Let's focus, NAME</p>
+                    <p className={styles.message}>Let's focus, {username}</p>
                     <div className={`${styles.clock} ${styles.clockFocusView}`}>
-                        {formatTime(timeLeft)}
+                        {convertSecondsToMinutes(timeLeft)}
                     </div>
                     <div className={styles.progressContainer}>
                         <div className={styles.progress} style={{ width: `${((timeLeft / (circleDuration * 60)) * 100)}%` }}></div>
@@ -112,7 +116,7 @@ export default function Timer() {
 }
 
 // Convert seconds to minutes and seconds 
-function formatTime(secs: number) {
+function convertSecondsToMinutes(secs: number) {
     const minutes = Math.floor(secs / 60)
     const seconds = secs % 60
     return `${formatNumberDigits(minutes)}:${formatNumberDigits(seconds)}`
@@ -135,5 +139,4 @@ function calculateEndHour(min: number): string {
     }
 
     return `${formatNumberDigits(endHour)}:${formatNumberDigits(endMinutes)}`
-
 }
