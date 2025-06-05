@@ -53,7 +53,7 @@ export default function Timer() {
         // start timer
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => prev - 1)
-        }, 100);
+        }, 1000);
     }
 
     const handlePauseTimer = () => {
