@@ -31,8 +31,9 @@
   --ff-heading: "Poiret One", sans-serif;
   --ff-body: "Montserrat", sans-serif;
 
-  /* Sizes */
+  /* Components Styles */
   --components-size: 70%;
+  --componets-border: 1px solid var(--color-primary-2)
 }
 
 

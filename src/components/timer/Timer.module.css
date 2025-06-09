@@ -6,7 +6,7 @@
 .timerContainer {
     width: var(--components-size);
     background-color: var(--color-primary-7);
-    border: 1px solid var(--color-primary-2);
+    border: var(--componets-border);
     padding: 1.5rem;
     border-radius: 16px;
     display: flex;
