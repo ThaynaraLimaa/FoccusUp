@@ -1,0 +1,81 @@
+.dayProgressPanelContainer {
+    background-color: var(--color-primary-7);
+    width: var(--components-size);
+    border: var(--componets-border);
+    border-radius: 16px;
+    padding: 1.8rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-primary-1);
+    padding: 0 1rem;
+
+    h2 {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+}
+
+.progressNumbersContainer {
+    display: flex;
+    gap: 1.5rem;
+
+    .numbers {
+        background-color: var(--color-white);
+        color: var(--color-black-50);
+        width: 25%;
+        padding: 2rem 0;
+        border-radius: 16px;
+        font-size: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 0.5rem;
+
+        .number {
+            font-size: 1.56rem;
+            color: var(--color-black);
+            font-weight: bold;
+        }
+    }
+}
+
+.tasksProgressContainer {
+    background-color: var(--color-white);
+    padding: 2rem 3.5rem;
+    border-radius: 16px;
+
+    .taskProgressHeader {
+        color: var(--color-black-50);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .progressBarContainer {
+        width: 100%;
+        height: 8px;
+        margin-top: 1rem;
+        background-color: var(--color-black-10);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+
+        .progress {
+            background-color: var(--color-primary);
+            width: 60%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+        }
+    }
+
+
+}
