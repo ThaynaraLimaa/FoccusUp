@@ -7,16 +7,28 @@ const rewardTempList = [
     { id: '30', name: "Buy a Small Gift", cost: 6, isCollected: false }
 ];
 
-export default function RewardsPanel() {
+type RewardsPanelProps = {
+    panelIndex: number,
+    selectedIndex: number
+}
+
+export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanelProps) {
     return (
-        <div className={styles.rewardsPanelContainer}>
+        <div
+            className={styles.rewardsPanelContainer}
+            role='tabpanel'
+            hidden={selectedIndex !== panelIndex}
+            style={{ display: selectedIndex !== panelIndex ? 'none' : 'flex' }}
+            id={`productivity-tabpanel-${panelIndex}`}
+            aria-labelledby='rewards-tab'
+        >
             <div className={styles.header}>
                 <h2>My Rewards</h2>
                 <span>Today's Credits: 12 CDR</span>
             </div>
             <ul className={styles.taskListContainer}>
                 {rewardTempList.map(reward => (
-                    <Reward {...reward} key={reward.id}/>
+                    <Reward {...reward} key={reward.id} />
                 ))}
             </ul>
         </div>

@@ -12,7 +12,12 @@ const tempTask = [
     { id: '5', name: "Read news about Programming", duration: "30m", CDRValue: 1, completed: false },
 ]
 
-export default function TaskListPanel() {
+type TaskListPanelProps = {
+    panelIndex: number,
+    selectedIndex: number
+}
+
+export default function TaskListPanel({panelIndex, selectedIndex}: TaskListPanelProps) {
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
@@ -23,7 +28,16 @@ export default function TaskListPanel() {
     }
 
     return (
-        <div className={styles.taskListPanelContainer}>
+
+        <div
+            className={styles.taskListPanelContainer}
+            hidden={selectedIndex !== panelIndex}
+            style={{display: selectedIndex !== panelIndex ? 'none' : 'flex'}}
+            role='tabpanel'
+            id={`productivity-tabpanel-${panelIndex}`}
+            aria-labelledby={`task-list-tab`}
+
+        >
             <div className={styles.header}>
                 <h2>Today's Task</h2>
                 <span>3/5</span>
@@ -54,7 +68,7 @@ export default function TaskListPanel() {
                     </div>
                 </form>
             )}
-            
+
             <button className={styles.addTaskBtn} onClick={() => setIsAdding(true)} style={{ display: isAdding ? 'none' : 'block' }}>
                 <FontAwesomeIcon icon={faPlus} /> Add task
             </button>
@@ -64,7 +78,7 @@ export default function TaskListPanel() {
 
 // This function will be used later
 function formartDuration(min: number) {
-    if(min == 0) {
+    if (min == 0) {
         return '--'
     }
 
