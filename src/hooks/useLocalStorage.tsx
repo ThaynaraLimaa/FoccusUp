@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LocalStorageKeys } from "../constants/localStorageKeys";
 
 function getSavedValue<T>(key: LocalStorageKeys, initialValue: T) {
@@ -17,5 +17,5 @@ export default function useLocalStorage<T>(key: LocalStorageKeys, initialValue?:
         localStorage.setItem(key, JSON.stringify(storagedValue))
     }, [storagedValue])
 
-    return [storagedValue, setStorageValue]
+    return [storagedValue, setStorageValue] as [T, Dispatch<SetStateAction<T>>]
 }

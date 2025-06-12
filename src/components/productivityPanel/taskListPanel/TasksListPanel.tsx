@@ -3,28 +3,40 @@ import Task from "./Task"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FormEvent, useRef, useState } from 'react'
+import useLocalStorage from '../../../hooks/useLocalStorage'
+import { LocalStorageKeys } from '../../../constants/localStorageKeys'
+import { v4 as uuid4 } from 'uuid'
 
-const tempTask = [
-    { id: '1', name: "Finish Project UI", duration: "1h", CDRValue: 1, completed: true },
-    { id: '2', name: "Write Unit Tests", duration: "2h30m", CDRValue: 1, completed: true },
-    { id: '3', name: "Debug API Integration", duration: "1h", CDRValue: 1, completed: true },
-    { id: '4', name: "Research New Frameworks", duration: "--", CDRValue: 1, completed: false },
-    { id: '5', name: "Read news about Programming", duration: "30m", CDRValue: 1, completed: false },
-]
+type Task = {
+    id: string,
+    name: string,
+    duration: string,
+    CDRValue: number,
+    completed: boolean
+}
+
 
 type TaskListPanelProps = {
     panelIndex: number,
     selectedIndex: number
 }
 
-export default function TaskListPanel({panelIndex, selectedIndex}: TaskListPanelProps) {
+export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPanelProps) {
+    const [tasks, setTasks] = useLocalStorage<Task[]>(LocalStorageKeys.Tasks, [] as Task[])
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
+    console.log(durationRef.current?.value)
+
 
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
-        alert("I'm still working on this, this task won't be added for now")
+        console.log(createNewTask(taskNameRef.current!.value, durationRef.current!.value))
+       setTasks(prev => [
+        ...prev,
+        createNewTask(taskNameRef.current!.value, durationRef.current!.value)
+       ])
+        
     }
 
     return (
@@ -32,7 +44,7 @@ export default function TaskListPanel({panelIndex, selectedIndex}: TaskListPanel
         <div
             className={styles.taskListPanelContainer}
             hidden={selectedIndex !== panelIndex}
-            style={{display: selectedIndex !== panelIndex ? 'none' : 'flex'}}
+            style={{ display: selectedIndex !== panelIndex ? 'none' : 'flex' }}
             role='tabpanel'
             id={`productivity-tabpanel-${panelIndex}`}
             aria-labelledby={`task-list-tab`}
@@ -44,7 +56,7 @@ export default function TaskListPanel({panelIndex, selectedIndex}: TaskListPanel
             </div>
 
             <ul className={styles.taskListContainer}>
-                {tempTask.map(task => (
+                {tasks.map(task => (
                     <Task {...task} key={task.id} />
                 ))}
             </ul>
@@ -76,7 +88,6 @@ export default function TaskListPanel({panelIndex, selectedIndex}: TaskListPanel
     )
 }
 
-// This function will be used later
 function formartDuration(min: number) {
     if (min == 0) {
         return '--'
@@ -94,5 +105,16 @@ function formartDuration(min: number) {
 
     } else {
         return `${hours}h`
+    }
+}
+
+function createNewTask(name: string, duration: string | undefined): Task {
+    const formatedDuration = duration == undefined ? '--' : formartDuration(Number(duration))
+    return {
+        id: uuid4(), 
+        name: name,
+        duration: formatedDuration, 
+        CDRValue: 1, 
+        completed: false
     }
 }
