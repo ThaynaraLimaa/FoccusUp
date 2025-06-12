@@ -26,3 +26,73 @@
         font-weight: 500;
     }
 }
+
+.addRewardBtn {
+    background-color: transparent;
+    border: none;
+    color: var(--color-primary-3);
+    align-self: flex-end;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+
+    &:hover {
+        color: var(--color-primary-1);
+    }
+}
+
+.newRewardForm {
+    background-color: var(--color-white);
+    margin-bottom: 2.5rem;
+    /* important because of actions btns */
+    padding: 1.8rem 1.5rem;
+    border-radius: 16px;
+    position: relative;
+
+    .label {
+        display: flex;
+
+        .input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid var(--color-black);
+            outline: none;
+            padding: 0.2rem;
+        }
+    }
+
+    .formActions {
+        position: absolute;
+        bottom: -55%;
+        right: 0;
+
+        .submitBtn {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            margin-right: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 300ms ease-in-out;
+
+            &:hover {
+                background-color: var(--color-primary-5);
+            }
+        }
+
+        .cancelBtn {
+            background-color: var(--color-black-10);
+            color: var(--color-black);
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 300ms ease-in-out;
+
+            &:hover {
+                background-color: var(--color-accent-red);
+            }
+        }
+    }
+}
