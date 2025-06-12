@@ -6,15 +6,7 @@ import { FormEvent, useRef, useState } from 'react'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import { LocalStorageKeys } from '../../../constants/localStorageKeys'
 import { v4 as uuid4 } from 'uuid'
-
-type Task = {
-    id: string,
-    name: string,
-    duration: string,
-    CDRValue: number,
-    completed: boolean
-}
-
+import {Task as TaskData} from '../../../types/tasks'
 
 type TaskListPanelProps = {
     panelIndex: number,
@@ -22,7 +14,7 @@ type TaskListPanelProps = {
 }
 
 export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPanelProps) {
-    const [tasks, setTasks] = useLocalStorage<Task[]>(LocalStorageKeys.Tasks, [] as Task[])
+    const [tasks, setTasks] = useLocalStorage<TaskData[]>(LocalStorageKeys.Tasks, [] as TaskData[])
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
@@ -108,7 +100,7 @@ function formartDuration(min: number) {
     }
 }
 
-function createNewTask(name: string, duration: string | undefined): Task {
+function createNewTask(name: string, duration: string | undefined): TaskData {
     const formatedDuration = duration == undefined ? '--' : formartDuration(Number(duration))
     return {
         id: uuid4(), 
