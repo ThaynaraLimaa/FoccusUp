@@ -1,25 +1,15 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './Task.module.css'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
-import useLocalStorage from '../../../hooks/useLocalStorage'
-import { LocalStorageKeys } from '../../../constants/localStorageKeys'
 import { Task as TaskData } from '../../../types/tasks'
 
-
 type TaskProps = {
-    handleDeleteTask:  (id: string) => void
+    handleToggleTaskComplete:  (id: string) => void,
+    handleDeleteTask:  (id: string) => void,
 } & TaskData
 
-export default function Task({ id, name, duration, CDRValue, completed, handleDeleteTask }: TaskProps) {
-    const [isChecked, setIsChecked] = useState(completed);
-    const [tasks, setTasks] = useLocalStorage(LocalStorageKeys.Tasks, [] as TaskData[]); 
-
-    const handleChangeCompleteState = () => {
-        setIsChecked(prev => !prev)
-    }
-    
-    return (
+export default function Task({ id, name, duration, CDRValue, completed, handleDeleteTask, handleToggleTaskComplete}: TaskProps) {
+ return (
         <li className={styles.task}>
             <div>
                 <input 
@@ -27,8 +17,8 @@ export default function Task({ id, name, duration, CDRValue, completed, handleDe
                 name={`${id}-checkbox`} 
                 id={`${id}-checkbox`} 
                 className={styles.checkbox} 
-                checked={isChecked} 
-                onChange={handleChangeCompleteState}/>
+                checked={completed} 
+                onChange={() => handleToggleTaskComplete(id)}/>
                 <label htmlFor={`${id}-checkbox`} className={styles.label}>
                     <span className={styles.customCheckbox}></span>
                     {name}

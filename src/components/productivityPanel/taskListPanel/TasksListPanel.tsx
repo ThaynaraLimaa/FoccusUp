@@ -6,7 +6,7 @@ import { FormEvent, useRef, useState } from 'react'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import { LocalStorageKeys } from '../../../constants/localStorageKeys'
 import { v4 as uuid4 } from 'uuid'
-import {Task as TaskData} from '../../../types/tasks'
+import { Task as TaskData } from '../../../types/tasks'
 
 type TaskListPanelProps = {
     panelIndex: number,
@@ -19,14 +19,24 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
 
+    const totalTasks = tasks.length
+    const completedTask = tasks.filter(task => task.completed == true).length
+
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
         console.log(createNewTask(taskNameRef.current!.value, durationRef.current!.value))
-       setTasks(prev => [
-        ...prev,
-        createNewTask(taskNameRef.current!.value, durationRef.current!.value)
-       ])
-        
+        setTasks(prev => [
+            ...prev,
+            createNewTask(taskNameRef.current!.value, durationRef.current!.value)
+        ])
+
+    }
+
+    const handleToggleComplete = (id: string) => {
+        const updatedTask = tasks.map(task => {
+            return task.id === id ? { ...task, completed: !task.completed } : task
+        })
+        setTasks(updatedTask)
     }
 
     const handleDeleteTask = (id: string) => {
@@ -46,12 +56,12 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
         >
             <div className={styles.header}>
                 <h2>Today's Task</h2>
-                <span>3/5</span>
+                <span>{completedTask}/{totalTasks}</span>
             </div>
 
             <ul className={styles.taskListContainer}>
                 {tasks.map(task => (
-                    <Task {...task} handleDeleteTask={handleDeleteTask} key={task.id} />
+                    <Task {...task} handleDeleteTask={handleDeleteTask} handleToggleTaskComplete={handleToggleComplete} key={task.id} />
                 ))}
             </ul>
 
@@ -105,10 +115,10 @@ function formartDuration(min: number) {
 function createNewTask(name: string, duration: string | undefined): TaskData {
     const formatedDuration = duration == undefined ? '--' : formartDuration(Number(duration))
     return {
-        id: uuid4(), 
+        id: uuid4(),
         name: name,
-        duration: formatedDuration, 
-        CDRValue: 1, 
+        duration: formatedDuration,
+        CDRValue: 1,
         completed: false
     }
 }
