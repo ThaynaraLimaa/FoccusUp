@@ -18,8 +18,6 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
-    console.log(durationRef.current?.value)
-
 
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
@@ -29,6 +27,10 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
         createNewTask(taskNameRef.current!.value, durationRef.current!.value)
        ])
         
+    }
+
+    const handleDeleteTask = (id: string) => {
+        setTasks(prev => prev.filter(task => task.id !== id))
     }
 
     return (
@@ -49,7 +51,7 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
 
             <ul className={styles.taskListContainer}>
                 {tasks.map(task => (
-                    <Task {...task} key={task.id} />
+                    <Task {...task} handleDeleteTask={handleDeleteTask} key={task.id} />
                 ))}
             </ul>
 
