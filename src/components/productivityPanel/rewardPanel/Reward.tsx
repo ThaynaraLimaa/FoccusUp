@@ -2,15 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './Reward.module.css'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
+import { Reward as RewardData} from '../../../types/rewards';
 
-type Reward = {
-    id: string,
-    name: string,
-    cost: number,
-    isCollected: boolean
-}
-
-export default function Reward({ id, name, cost, isCollected }: Reward) {
+export default function Reward({ id, name, cost, isCollected }: RewardData) {
     const [isChecked, setIsChecked] = useState(isCollected);
 
     const handleChangeCollectedState = () => {
