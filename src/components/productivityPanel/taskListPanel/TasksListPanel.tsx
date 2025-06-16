@@ -7,6 +7,7 @@ import useLocalStorage from '../../../hooks/useLocalStorage'
 import { LocalStorageKeys } from '../../../constants/localStorageKeys'
 import { v4 as uuid4 } from 'uuid'
 import { Task as TaskData } from '../../../types/tasks'
+import useCredits from '../../../hooks/useCredits'
 
 type TaskListPanelProps = {
     panelIndex: number,
@@ -15,6 +16,7 @@ type TaskListPanelProps = {
 
 export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPanelProps) {
     const [tasks, setTasks] = useLocalStorage<TaskData[]>(LocalStorageKeys.Tasks, [] as TaskData[])
+    const { gainCredits, spendCredits } = useCredits()
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
@@ -24,7 +26,6 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
 
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
-        console.log(createNewTask(taskNameRef.current!.value, durationRef.current!.value))
         setTasks(prev => [
             ...prev,
             createNewTask(taskNameRef.current!.value, durationRef.current!.value)
@@ -33,10 +34,20 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
     }
 
     const handleToggleComplete = (id: string) => {
-        const updatedTask = tasks.map(task => {
+        const updatedTasks = tasks.map(task => {
             return task.id === id ? { ...task, completed: !task.completed } : task
         })
-        setTasks(updatedTask)
+        const updatedTask = updatedTasks.find(task => task.id === id);
+
+        if (updatedTask?.completed === true) {
+            gainCredits(updatedTask.CDRValue)
+        }
+        
+        if (updatedTask?.completed === false) {
+            spendCredits(updatedTask.CDRValue)
+        }
+
+        setTasks(updatedTasks)
     }
 
     const handleDeleteTask = (id: string) => {
