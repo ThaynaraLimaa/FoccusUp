@@ -1,4 +1,5 @@
 export enum LocalStorageKeys {
     Username= 'foccusUsername',
-    Tasks = 'FoccusTasks'
+    Tasks = 'FoccusTasks',
+    Reward = 'FoccusReward'
 }
