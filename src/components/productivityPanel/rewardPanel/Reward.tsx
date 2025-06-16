@@ -1,21 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './Reward.module.css'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
-import { Reward as RewardData} from '../../../types/rewards';
+import { Reward as RewardData } from '../../../types/rewards';
 
-export default function Reward({ id, name, cost, isCollected }: RewardData) {
-    const [isChecked, setIsChecked] = useState(isCollected);
+type RewardProps = {
+    hanldeCollectReward: (id: string) => void,
+    handleDeleteReward: (id: string) => void
+} & RewardData
 
-    const handleChangeCollectedState = () => {
-        setIsChecked(prev => !prev);
-        // more actions will happen
-    }
-
-    const handleDeleteReward = () => {
-        alert("I'm still working on this, this reward won't be deleted for now")
-    }
-
+export default function Reward({ id, name, cost, isCollected, hanldeCollectReward, handleDeleteReward }: RewardProps) {
     return (
         <li className={styles.reward}>
             <label htmlFor={`${id}-checkbox`} className={styles.label}>
@@ -24,17 +17,16 @@ export default function Reward({ id, name, cost, isCollected }: RewardData) {
                     name={`${id}-checkbox`}
                     id={`${id}-checkbox`}
                     className={styles.checkbox}
-                    checked={isChecked}
-                    onChange={handleChangeCollectedState}
+                    checked={isCollected}
+                    onChange={() => hanldeCollectReward(id)}
                 />
                 <span className={styles.customCheckbox}></span>
                 {name}
             </label>
             <div className={styles.left}>
                 <p aria-label={`reward cost: ${cost}`} className={styles.cost}>{cost} CDR</p>
-                <button className={styles.deleteButton} aria-label={`delete reward ${name}`} onClick={handleDeleteReward}><FontAwesomeIcon icon={faTrash} /></button>
+                <button className={styles.deleteButton} aria-label={`delete reward ${name}`} onClick={() => handleDeleteReward(id)} style={isCollected ? {display: 'none'} : {display: 'block'}}><FontAwesomeIcon icon={faTrash} /></button>
             </div>
-
         </li>
     )
 }
