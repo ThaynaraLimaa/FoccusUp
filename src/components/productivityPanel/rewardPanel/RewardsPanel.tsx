@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import useLocalStorage from '../../../hooks/useLocalStorage';
 import { LocalStorageKeys } from '../../../constants/localStorageKeys';
-import { Reward as RewardData} from '../../../types/rewards';
+import { Reward as RewardData } from '../../../types/rewards';
 import { v4 as uuid4 } from 'uuid';
+import useCredits from '../../../hooks/useCredits';
 
 type RewardsPanelProps = {
     panelIndex: number,
@@ -14,21 +15,22 @@ type RewardsPanelProps = {
 }
 
 export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanelProps) {
-    const [isAdding, setIsAdding] = useState(false); 
-    const rewardRef = useRef<HTMLInputElement>(null); 
-    const [rewards, setRewards] = useLocalStorage(LocalStorageKeys.Reward, [] as RewardData[])
+    const [isAdding, setIsAdding] = useState(false);
+    const rewardRef = useRef<HTMLInputElement>(null);
+    const [rewards, setRewards] = useLocalStorage(LocalStorageKeys.Reward, [] as RewardData[]);
+    const { creditsAvailable } = useCredits();
 
     const handleSubmitReward = (e: FormEvent) => {
         e.preventDefault();
         setRewards((prev) => [
             ...prev,
             createNewReward(rewardRef.current!.value)
-        ]); 
+        ]);
     }
 
     const handleCollectReward = (id: string) => {
         const updatedRewards = rewards.map(reward => {
-            return reward.id == id ? {...reward, isCollected: !reward.isCollected} : reward
+            return reward.id == id ? { ...reward, isCollected: !reward.isCollected } : reward
         });
 
         setRewards(updatedRewards);
@@ -50,14 +52,14 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
         >
             <div className={styles.header}>
                 <h2>My Rewards</h2>
-                <span>Today's Credits: 12 CDR</span>
+                <span>Today's Credits: {creditsAvailable} CDR</span>
             </div>
             <ul className={styles.taskListContainer}>
                 {rewards.map(reward => (
-                    <Reward {...reward} hanldeCollectReward={handleCollectReward} handleDeleteReward={handleDeleteReward} key={reward.id} />
+                    <Reward {...reward} isDisabled={reward.cost > creditsAvailable} hanldeCollectReward={handleCollectReward} handleDeleteReward={handleDeleteReward} key={reward.id} />
                 ))}
             </ul>
-            
+
             {isAdding && (
                 <form className={styles.newRewardForm} onSubmit={handleSubmitReward}>
                     <label htmlFor="newTaskName" className={styles.label}>
@@ -82,9 +84,9 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
 
 function createNewReward(name: string): RewardData {
     return {
-        id: uuid4(), 
+        id: uuid4(),
         name: name,
-        cost: 6, 
+        cost: 6,
         isCollected: false
     }
 }

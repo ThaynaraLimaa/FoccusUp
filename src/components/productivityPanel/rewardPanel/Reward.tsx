@@ -4,11 +4,12 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Reward as RewardData } from '../../../types/rewards';
 
 type RewardProps = {
+    isDisabled: boolean, 
     hanldeCollectReward: (id: string) => void,
     handleDeleteReward: (id: string) => void
 } & RewardData
 
-export default function Reward({ id, name, cost, isCollected, hanldeCollectReward, handleDeleteReward }: RewardProps) {
+export default function Reward({ id, name, cost, isCollected, isDisabled, hanldeCollectReward, handleDeleteReward }: RewardProps) {
     return (
         <li className={styles.reward}>
             <label htmlFor={`${id}-checkbox`} className={styles.label}>
@@ -19,6 +20,7 @@ export default function Reward({ id, name, cost, isCollected, hanldeCollectRewar
                     className={styles.checkbox}
                     checked={isCollected}
                     onChange={() => hanldeCollectReward(id)}
+                    disabled={isDisabled}
                 />
                 <span className={styles.customCheckbox}></span>
                 {name}
