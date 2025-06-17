@@ -3,11 +3,8 @@ import Task from "./Task"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FormEvent, useContext, useRef, useState } from 'react'
-import useLocalStorage from '../../../hooks/useLocalStorage'
-import { LocalStorageKeys } from '../../../constants/localStorageKeys'
-import { v4 as uuid4 } from 'uuid'
-import { Task as TaskType } from '../../../types/tasks'
 import { DayInformationContext } from '../../../context/DayInformationContext'
+import { TasksContext } from '../../../context/TasksContext'
 
 type TaskListPanelProps = {
     panelIndex: number,
@@ -15,47 +12,32 @@ type TaskListPanelProps = {
 }
 
 export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPanelProps) {
-    const [tasks, setTasks] = useLocalStorage<TaskType[]>(LocalStorageKeys.Tasks, [] as TaskType[])
+    const { tasks, totalTasks, completedTasks, addTask, toggleComplete, deleteTask } = useContext(TasksContext)
     const { gainCredits } = useContext(DayInformationContext);
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
 
-    const totalTasks = tasks.length
-    const completedTask = tasks.filter(task => task.completed == true).length
-
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
-        setTasks(prev => [
-            ...prev,
-            createNewTask(taskNameRef.current!.value, durationRef.current!.value)
-        ])
-
+        addTask(taskNameRef.current!.value, durationRef.current!.value)
     }
 
     const handleToggleComplete = (id: string) => {
-        const updatedTasks = tasks.map(task => {
-            return task.id === id ? { ...task, completed: !task.completed } : task
-        })
-        const updatedTask = updatedTasks.find(task => task.id === id);
+        const completedTask = toggleComplete(id); 
 
-        if (updatedTask?.completed === true) {
-            gainCredits(updatedTask.CDRValue, 'gaining')
+        if (completedTask?.completed === true) {
+            gainCredits(completedTask.CDRValue, 'gaining');
         }
 
-        if (updatedTask?.completed === false) {
-            gainCredits(updatedTask.CDRValue, 'returning')
+        if (completedTask?.completed === false) {
+            gainCredits(completedTask.CDRValue, 'returning');
         }
-
-        setTasks(updatedTasks)
     }
 
-    const handleDeleteTask = (id: string) => {
-        setTasks(prev => prev.filter(task => task.id !== id))
-    }
+    const handleDeleteTask = (id: string) => { deleteTask(id) }; 
 
     return (
-
         <div
             className={styles.taskListPanelContainer}
             hidden={selectedIndex !== panelIndex}
@@ -67,7 +49,7 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
         >
             <div className={styles.header}>
                 <h2>Today's Task</h2>
-                <span>{completedTask}/{totalTasks}</span>
+                <span>{completedTasks}/{totalTasks}</span>
             </div>
 
             <ul className={styles.taskListContainer}>
@@ -101,35 +83,4 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
             </button>
         </div>
     )
-}
-
-function formartDuration(min: number) {
-    if (min == 0) {
-        return '--'
-    }
-
-    if (min < 60) {
-        return `${min}m`
-    }
-
-    const hours = Math.floor(min / 60);
-    const minutes = min % 60
-
-    if (minutes !== 0) {
-        return `${hours}h${minutes}m`
-
-    } else {
-        return `${hours}h`
-    }
-}
-
-function createNewTask(name: string, duration: string | undefined): TaskType {
-    const formatedDuration = duration == undefined ? '--' : formartDuration(Number(duration))
-    return {
-        id: uuid4(),
-        name: name,
-        duration: formatedDuration,
-        CDRValue: 1,
-        completed: false
-    }
 }
