@@ -2,12 +2,12 @@ import styles from './TasksListPanel.module.css'
 import Task from "./Task"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useContext, useRef, useState } from 'react'
 import useLocalStorage from '../../../hooks/useLocalStorage'
 import { LocalStorageKeys } from '../../../constants/localStorageKeys'
 import { v4 as uuid4 } from 'uuid'
-import { Task as TaskData } from '../../../types/tasks'
-import useCredits from '../../../hooks/useCredits'
+import { Task as TaskType } from '../../../types/tasks'
+import { DayInformationContext } from '../../../context/DayInformationContext'
 
 type TaskListPanelProps = {
     panelIndex: number,
@@ -15,8 +15,8 @@ type TaskListPanelProps = {
 }
 
 export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPanelProps) {
-    const [tasks, setTasks] = useLocalStorage<TaskData[]>(LocalStorageKeys.Tasks, [] as TaskData[])
-    const { gainCredits, spendCredits } = useCredits()
+    const [tasks, setTasks] = useLocalStorage<TaskType[]>(LocalStorageKeys.Tasks, [] as TaskType[])
+    const { gainCredits } = useContext(DayInformationContext);
     const [isAdding, setIsAdding] = useState(false);
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
@@ -40,11 +40,11 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
         const updatedTask = updatedTasks.find(task => task.id === id);
 
         if (updatedTask?.completed === true) {
-            gainCredits(updatedTask.CDRValue)
+            gainCredits(updatedTask.CDRValue, 'gaining')
         }
-        
+
         if (updatedTask?.completed === false) {
-            spendCredits(updatedTask.CDRValue)
+            gainCredits(updatedTask.CDRValue, 'returning')
         }
 
         setTasks(updatedTasks)
@@ -123,7 +123,7 @@ function formartDuration(min: number) {
     }
 }
 
-function createNewTask(name: string, duration: string | undefined): TaskData {
+function createNewTask(name: string, duration: string | undefined): TaskType {
     const formatedDuration = duration == undefined ? '--' : formartDuration(Number(duration))
     return {
         id: uuid4(),

@@ -1,13 +1,13 @@
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useContext, useRef, useState } from 'react';
 import Reward from './Reward';
 import styles from './RewardsPanel.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import useLocalStorage from '../../../hooks/useLocalStorage';
 import { LocalStorageKeys } from '../../../constants/localStorageKeys';
-import { Reward as RewardData } from '../../../types/rewards';
+import { Reward as RewardType } from '../../../types/rewards';
 import { v4 as uuid4 } from 'uuid';
-import useCredits from '../../../hooks/useCredits';
+import { DayInformationContext } from '../../../context/DayInformationContext';
 
 type RewardsPanelProps = {
     panelIndex: number,
@@ -17,8 +17,8 @@ type RewardsPanelProps = {
 export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanelProps) {
     const [isAdding, setIsAdding] = useState(false);
     const rewardRef = useRef<HTMLInputElement>(null);
-    const [rewards, setRewards] = useLocalStorage(LocalStorageKeys.Reward, [] as RewardData[]);
-    const { creditsAvailable } = useCredits();
+    const [rewards, setRewards] = useLocalStorage(LocalStorageKeys.Reward, [] as RewardType[]);
+    const { creditsAvailable, creditsSpended, spendCredits } = useContext(DayInformationContext);
 
     const handleSubmitReward = (e: FormEvent) => {
         e.preventDefault();
@@ -29,9 +29,16 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
     }
 
     const handleCollectReward = (id: string) => {
-        const updatedRewards = rewards.map(reward => {
-            return reward.id == id ? { ...reward, isCollected: !reward.isCollected } : reward
-        });
+        const updatedRewards = rewards.map(reward => reward.id == id ? { ...reward, isCollected: !reward.isCollected } : reward);
+        const updatedReward = updatedRewards.find(reward => reward.id == id);
+
+        if (updatedReward?.isCollected == true) {
+            spendCredits(updatedReward.cost, 'spending')
+        }
+
+        if (updatedReward?.isCollected == false) {
+            spendCredits(updatedReward.cost, 'returning')
+        }
 
         setRewards(updatedRewards);
     }
@@ -56,7 +63,12 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
             </div>
             <ul className={styles.taskListContainer}>
                 {rewards.map(reward => (
-                    <Reward {...reward} isDisabled={reward.cost > creditsAvailable} hanldeCollectReward={handleCollectReward} handleDeleteReward={handleDeleteReward} key={reward.id} />
+                    <Reward
+                        {...reward}
+                        isDisabled={reward.cost > creditsAvailable && !reward.isCollected}
+                        hanldeCollectReward={handleCollectReward}
+                        handleDeleteReward={handleDeleteReward}
+                        key={reward.id} />
                 ))}
             </ul>
 
@@ -82,7 +94,7 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
 }
 
 
-function createNewReward(name: string): RewardData {
+function createNewReward(name: string): RewardType {
     return {
         id: uuid4(),
         name: name,
