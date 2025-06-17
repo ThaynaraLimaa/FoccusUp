@@ -18,7 +18,7 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
     const [isAdding, setIsAdding] = useState(false);
     const rewardRef = useRef<HTMLInputElement>(null);
     const [rewards, setRewards] = useLocalStorage(LocalStorageKeys.Reward, [] as RewardType[]);
-    const { creditsAvailable, creditsSpended, spendCredits } = useContext(DayInformationContext);
+    const { creditsAvailable, spendCredits } = useContext(DayInformationContext);
 
     const handleSubmitReward = (e: FormEvent) => {
         e.preventDefault();
@@ -26,6 +26,8 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
             ...prev,
             createNewReward(rewardRef.current!.value)
         ]);
+        setTimeout(() => rewardRef.current!.value = '', 0); 
+        setIsAdding(false)
     }
 
     const handleCollectReward = (id: string) => {

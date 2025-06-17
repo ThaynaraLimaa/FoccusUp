@@ -21,6 +21,9 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
         addTask(taskNameRef.current!.value, durationRef.current!.value)
+            taskNameRef.current!.value = '';
+            durationRef.current!.value = '';
+            taskNameRef.current?.focus(); 
     }
 
     const handleToggleComplete = (id: string) => {
