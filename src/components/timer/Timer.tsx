@@ -5,21 +5,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { formatNumberDigits } from '../../utils/formatNumber';
 import { timeBasedGreeting } from '../../utils/timeBasedGreeting';
-
-type TimerState = 'stopped' | 'running' | 'paused'
+import { TimerState } from '../../App';
 
 type TimerProps = {
-    username: string
+    username: string,
+    timerState: TimerState,
+    setTimerState: (newState: TimerState) => void
 }
 
-export default function Timer({ username }: TimerProps) {
-    const [circleDuration, setCircleDuration] = useState<number>(45);
+export default function Timer({ username, timerState, setTimerState }: TimerProps) {
+    const [circleDuration, setCircleDuration] = useState<number>(1);
     const [timeLeft, setTimeLeft] = useState(0);
-    const [timerState, setTimerState] = useState<TimerState>('stopped');
     const [endHour, setEndHour] = useState('');
     const timerRef = useRef<number | null>(null);
 
-    // To show an alert if user tries to close the tab when timer is running 
+    // Shows an alert if user tries to close the tab when timer is running 
     useEffect(() => {
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
             if (timerState === 'running') {
@@ -57,7 +57,7 @@ export default function Timer({ username }: TimerProps) {
         // start timer
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => prev - 1)
-        }, 1000);
+        }, 100);
     }
 
     const handlePauseTimer = () => {
