@@ -12,18 +12,6 @@ export type TimerState = 'stopped' | 'running' | 'paused'
 function App() {
   const [username, setUsername] = useLocalStorage(LocalStorageKeys.Username, '')
   const [timerState, setTimerState] = useState<TimerState>('stopped');
-  const [dayInformation, setDayInformation] = useLocalStorage(LocalStorageKeys.DayInformation);
-
-  // Sets default values for dayInformation
-  if (dayInformation === undefined) {
-    setDayInformation({
-      totalHours: 0,
-      totalCircles: 0,
-      creditsEarned: 0,
-      creditsSpended: 0,
-      rewardsRedeemed: 0
-    })
-  }
 
   if (!username) {
     const prompt = window.prompt(`What's your name?`);
