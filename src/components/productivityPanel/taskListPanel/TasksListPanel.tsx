@@ -2,7 +2,7 @@ import styles from './TasksListPanel.module.css'
 import Task from "./Task"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import { FormEvent, useContext, useRef, useState } from 'react'
+import { FormEvent, useContext, useEffect, useRef, useState } from 'react'
 import { DayInformationContext } from '../../../context/DayInformationContext'
 import { TasksContext } from '../../../context/TasksContext'
 
@@ -18,16 +18,22 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
     const taskNameRef = useRef<HTMLInputElement>(null);
     const durationRef = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        if (taskNameRef.current) {
+            taskNameRef.current.focus();
+        }
+    }, [isAdding])
+
     const handleSubmitTask = (e: FormEvent) => {
         e.preventDefault();
         addTask(taskNameRef.current!.value, durationRef.current!.value)
-            taskNameRef.current!.value = '';
-            durationRef.current!.value = '';
-            taskNameRef.current?.focus(); 
+        taskNameRef.current!.value = '';
+        durationRef.current!.value = '';
+        taskNameRef.current?.focus();
     }
 
     const handleToggleComplete = (id: string) => {
-        const completedTask = toggleComplete(id); 
+        const completedTask = toggleComplete(id);
 
         if (completedTask?.completed === true) {
             gainCredits(completedTask.CDRValue, 'gaining');
@@ -38,7 +44,7 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
         }
     }
 
-    const handleDeleteTask = (id: string) => { deleteTask(id) }; 
+    const handleDeleteTask = (id: string) => { deleteTask(id) };
 
     return (
         <div

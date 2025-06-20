@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useRef, useState } from 'react';
+import { FormEvent, useContext, useEffect, useRef, useState } from 'react';
 import Reward from './Reward';
 import styles from './RewardsPanel.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,6 +19,12 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
     const rewardRef = useRef<HTMLInputElement>(null);
     const [rewards, setRewards] = useLocalStorage(LocalStorageKeys.Reward, [] as RewardType[]);
     const { creditsAvailable, spendCredits } = useContext(DayInformationContext);
+
+    useEffect(() => {
+            if (rewardRef.current) {
+                rewardRef.current.focus();
+            }
+        }, [isAdding])
 
     const handleSubmitReward = (e: FormEvent) => {
         e.preventDefault();
