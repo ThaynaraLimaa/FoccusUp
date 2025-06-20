@@ -9,6 +9,42 @@
     gap: 1.3rem;
 }
 
+.noTasksContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 0;
+
+    h1 {
+        color: var(--color-primary-2);
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    p {
+        font-size: 0.95rem;
+    }
+
+    button {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        margin: 2rem 0;
+        font-size: 0.75rem;
+        padding: 1rem 1.5rem;
+        letter-spacing: 3px;
+        border-radius: 16px;
+        border: none;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 300ms ease-in-out;
+
+        &:hover {
+            background-color: var(--color-primary-5);
+            letter-spacing: 5px;
+        }
+    }
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -44,7 +80,8 @@
 
 .newTaskForm {
     background-color: var(--color-white);
-    margin-bottom: 2.5rem; /* important because of actions btns */
+    margin-bottom: 2.5rem;
+    /* important because of actions btns */
     padding: 1.8rem 1.5rem;
     border-radius: 16px;
     display: grid;
@@ -65,8 +102,13 @@
         padding: 0.2rem;
     }
 
-    .taskInput {width: 85%;}
-    .durationInput {width: 30%;}
+    .taskInput {
+        width: 85%;
+    }
+
+    .durationInput {
+        width: 30%;
+    }
 
     .minuteSpan {
         color: var(--color-black-50);

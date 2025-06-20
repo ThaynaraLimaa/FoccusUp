@@ -21,10 +21,10 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
     const { creditsAvailable, spendCredits } = useContext(DayInformationContext);
 
     useEffect(() => {
-            if (rewardRef.current) {
-                rewardRef.current.focus();
-            }
-        }, [isAdding])
+        if (rewardRef.current) {
+            rewardRef.current.focus();
+        }
+    }, [isAdding])
 
     const handleSubmitReward = (e: FormEvent) => {
         e.preventDefault();
@@ -32,7 +32,7 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
             ...prev,
             createNewReward(rewardRef.current!.value)
         ]);
-        setTimeout(() => rewardRef.current!.value = '', 0); 
+        setTimeout(() => rewardRef.current!.value = '', 0);
         setIsAdding(false)
     }
 
@@ -65,20 +65,30 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
             id={`productivity-tabpanel-${panelIndex}`}
             aria-labelledby='rewards-tab'
         >
-            <div className={styles.header}>
-                <h2>My Rewards</h2>
-                <span>Today's Credits: {creditsAvailable} CDR</span>
-            </div>
-            <ul className={styles.taskListContainer}>
-                {rewards.map(reward => (
-                    <Reward
-                        {...reward}
-                        isDisabled={reward.cost > creditsAvailable && !reward.isCollected}
-                        hanldeCollectReward={handleCollectReward}
-                        handleDeleteReward={handleDeleteReward}
-                        key={reward.id} />
-                ))}
-            </ul>
+            {rewards.length < 1 && isAdding == false ? (
+                <div className={styles.noRewardContainer}>
+                    <h1>No rewards here yet... </h1>
+                    <p>Let's add some motivation!</p>
+                    <button onClick={() => setIsAdding(true)}><FontAwesomeIcon icon={faPlus} aria-label='plus icon' /> Add reward</button>
+                </div>
+            ) : (
+                <>
+                    <div className={styles.header}>
+                        <h2>My Rewards</h2>
+                        <span>Today's Credits: {creditsAvailable} CDR</span>
+                    </div>
+                    <ul className={styles.rewardListContainer}>
+                        {rewards.map(reward => (
+                            <Reward
+                                {...reward}
+                                isDisabled={reward.cost > creditsAvailable && !reward.isCollected}
+                                hanldeCollectReward={handleCollectReward}
+                                handleDeleteReward={handleDeleteReward}
+                                key={reward.id} />
+                        ))}
+                    </ul>
+                </>
+            )}
 
             {isAdding && (
                 <form className={styles.newRewardForm} onSubmit={handleSubmitReward}>
@@ -94,7 +104,7 @@ export default function RewardsPanel({ panelIndex, selectedIndex }: RewardsPanel
                 </form>
             )}
 
-            <button className={styles.addRewardBtn} onClick={() => setIsAdding(true)} style={{ display: isAdding ? 'none' : 'block' }}>
+            <button className={styles.addRewardBtn} onClick={() => setIsAdding(true)} style={{ display: isAdding || rewards.length < 1 ? 'none' : 'block' }}>
                 <FontAwesomeIcon icon={faPlus} /> Add New Reward
             </button>
         </div>

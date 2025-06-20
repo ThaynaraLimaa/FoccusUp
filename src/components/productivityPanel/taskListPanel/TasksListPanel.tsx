@@ -56,16 +56,25 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
             aria-labelledby={`task-list-tab`}
 
         >
-            <div className={styles.header}>
-                <h2>Today's Task</h2>
-                <span>{completedTasks}/{totalTasks}</span>
-            </div>
-
-            <ul className={styles.taskListContainer}>
-                {tasks.map(task => (
-                    <Task {...task} handleDeleteTask={handleDeleteTask} handleToggleTaskComplete={handleToggleComplete} key={task.id} />
-                ))}
-            </ul>
+            {totalTasks < 1 && isAdding == false ? (
+                <div className={styles.noTasksContainer}>
+                    <h1>It's so empty... </h1>
+                    <p>What are we doing today?</p>
+                    <button onClick={() => setIsAdding(true)}><FontAwesomeIcon icon={faPlus} aria-label='plus icon' /> Add task</button>
+                </div>
+            ) : (
+                <>
+                    <div className={styles.header}>
+                        <h2>Today's Tasks</h2>
+                        <span>{completedTasks}/{totalTasks}</span>
+                    </div>
+                    <ul className={styles.taskListContainer}>
+                        {tasks.map(task => (
+                            <Task {...task} handleDeleteTask={handleDeleteTask} handleToggleTaskComplete={handleToggleComplete} key={task.id} />
+                        ))}
+                    </ul>
+                </>
+            )}
 
             {isAdding && (
                 <form className={styles.newTaskForm} onSubmit={handleSubmitTask}>
@@ -87,7 +96,7 @@ export default function TaskListPanel({ panelIndex, selectedIndex }: TaskListPan
                 </form>
             )}
 
-            <button className={styles.addTaskBtn} onClick={() => setIsAdding(true)} style={{ display: isAdding ? 'none' : 'block' }}>
+            <button className={styles.addTaskBtn} onClick={() => setIsAdding(true)} style={{ display: isAdding || totalTasks < 1 ? 'none' : 'block' }}>
                 <FontAwesomeIcon icon={faPlus} /> Add task
             </button>
         </div>
