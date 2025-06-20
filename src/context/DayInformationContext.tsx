@@ -13,10 +13,18 @@ type DayInformationProviderPros = {
     children: ReactNode
 }
 
-export const DayInformationContext = createContext<DayInformationContextType>({} as DayInformationContextType);
+export const DayInformationContext = createContext<DayInformationContextType>({
+
+} as DayInformationContextType);
 
 export function DayInformationProvider({ children }: DayInformationProviderPros) {
-    const [dayInformation, setDayInformation] = useLocalStorage(LocalStorageKeys.DayInformation, {} as DayInformationType);
+    const [dayInformation, setDayInformation] = useLocalStorage(LocalStorageKeys.DayInformation, {
+        totalHours: 0,
+        totalCircles: 0,
+        creditsEarned: 0,
+        creditsSpended: 0,
+        rewardsRedeemed: 0
+    });
     const totalHours = dayInformation.totalHours;
     const totalCircles = dayInformation.totalCircles;
     const creditsEarned = dayInformation.creditsEarned;
