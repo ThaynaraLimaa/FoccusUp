@@ -5,15 +5,25 @@ import ProductivityPanel from "./components/productivityPanel/ProductivityPanel"
 import { LocalStorageKeys } from "./constants/localStorageKeys";
 import { DayInformationProvider } from "./context/DayInformationContext";
 import { TasksProvider } from "./context/TasksContext";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export type TimerState = 'stopped' | 'running' | 'paused'
 
 function App() {
   const [username, setUsername] = useLocalStorage(LocalStorageKeys.Username, '')
-  const [timerState, setTimerState] = useState<TimerState>('stopped'); 
+  const [timerState, setTimerState] = useState<TimerState>('stopped');
+  const [dayInformation, setDayInformation] = useLocalStorage(LocalStorageKeys.DayInformation);
 
-  useEffect(() => console.log(timerState), [timerState]);
+  // Sets default values for dayInformation
+  if (dayInformation === undefined) {
+    setDayInformation({
+      totalHours: 0,
+      totalCircles: 0,
+      creditsEarned: 0,
+      creditsSpended: 0,
+      rewardsRedeemed: 0
+    })
+  }
 
   if (!username) {
     const prompt = window.prompt(`What's your name?`);
@@ -30,7 +40,7 @@ function App() {
       <Header />
       <DayInformationProvider>
         <TasksProvider>
-          <Timer username={username} timerState={timerState} setTimerState={setTimerState}/>
+          <Timer username={username} timerState={timerState} setTimerState={setTimerState} />
           {timerState == "stopped" && <ProductivityPanel />}
         </TasksProvider>
       </DayInformationProvider>
