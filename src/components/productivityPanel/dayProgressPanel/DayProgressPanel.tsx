@@ -9,11 +9,23 @@ type DayProgressPanelProps = {
 }
 
 export default function DayProgressPanel({ panelIndex, selectedIndex }: DayProgressPanelProps) {
-    const { totalCircles, totalHours, creditsEarned, creditsSpended, rewardsRedeemed } = useContext(DayInformationContext);
-    const {totalTasks, completedTasks} = useContext(TasksContext)
+    const { totalCircles, totalMinutes, creditsEarned, creditsSpended, rewardsRedeemed } = useContext(DayInformationContext);
+    const { totalTasks, completedTasks } = useContext(TasksContext);
     const taskCompletedPercentage = (completedTasks / totalTasks) * 100;
     const now = new Date();
-    const date = now.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }); 
+    const date = now.toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+
+    const formatTime = (min: number): string => {
+        const hours = Math.floor(min / 60);
+        const minutes = min % 60;
+
+        if (hours == 0) {
+            return `0h ${min}m`
+        }
+
+        return `${hours}h ${minutes}m`
+
+    }
 
     return (
         <div
@@ -29,7 +41,7 @@ export default function DayProgressPanel({ panelIndex, selectedIndex }: DayProgr
                 <span>{date}</span>
             </div>
             <ul className={styles.progressNumbersContainer}>
-                <li className={styles.numbers}><span className={styles.number}>{totalHours}</span>Hours</li>
+                <li className={styles.numbers}><span className={styles.number}>{formatTime(totalMinutes)}</span>Time focused</li>
                 <li className={styles.numbers}><span className={styles.number}>{totalCircles}</span>Cycles</li>
                 <li className={styles.numbers}><span className={styles.number}>{creditsEarned}</span>CDR Earned</li>
                 <li className={styles.numbers}><span className={styles.number}>{creditsSpended}</span>CDR Spended</li>
