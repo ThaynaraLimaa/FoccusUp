@@ -13,19 +13,18 @@ type DayInformationProviderPros = {
     children: ReactNode
 }
 
-export const DayInformationContext = createContext<DayInformationContextType>({
-
-} as DayInformationContextType);
+export const DayInformationContext = createContext<DayInformationContextType>({} as DayInformationContextType);
 
 export function DayInformationProvider({ children }: DayInformationProviderPros) {
     const [dayInformation, setDayInformation] = useLocalStorage(LocalStorageKeys.DayInformation, {
-        totalHours: 0,
+        totalMinutes: 0,
         totalCircles: 0,
         creditsEarned: 0,
         creditsSpended: 0,
         rewardsRedeemed: 0
     });
-    const totalHours = dayInformation.totalHours;
+
+    const totalMinutes = dayInformation.totalMinutes;
     const totalCircles = dayInformation.totalCircles;
     const creditsEarned = dayInformation.creditsEarned;
     const creditsSpended = dayInformation.creditsSpended;
@@ -75,7 +74,7 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
 
 
     return (
-        <DayInformationContext.Provider value={{ totalHours, totalCircles, creditsEarned, creditsSpended, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits }}>
+        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpended, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits }}>
             {children}
         </DayInformationContext.Provider>
     )

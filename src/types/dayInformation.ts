@@ -1,5 +1,5 @@
 export type DayInformation = {
-    totalHours: number,
+    totalMinutes: number,
     totalCircles: number, 
     creditsEarned: number,
     creditsSpended: number, 
