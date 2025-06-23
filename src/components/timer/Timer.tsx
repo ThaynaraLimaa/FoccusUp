@@ -51,7 +51,7 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
         // start timer
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => prev - 1)
-        }, 100);
+        }, 1000);
     }
 
     const handlePauseTimer = () => {
@@ -73,7 +73,7 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
     if (timeLeft == 0 && timerState == 'running') {
         alert('congratulations!! You finished a focus circle!');
 
-        // Add more credits and update day stats 
+        // Add credits and update day stats 
         gainCredits(calculateCreditsEarned(circleDuration), 'gaining'); 
         increaseTotalCircles();
         increaseTotalMinutes(circleDuration); 
@@ -94,7 +94,7 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
                         <Slider
                             aria-label='minutes'
                             value={circleDuration}
-                            min={3}
+                            min={15}
                             max={180}
                             onChange={handleSliderChange}
                             sx={{ width: '100%', height: 5, color: 'var(--color-primary)', }}
