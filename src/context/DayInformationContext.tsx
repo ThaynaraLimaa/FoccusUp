@@ -5,8 +5,10 @@ import { DayInformation as DayInformationType } from "../types/dayInformation";
 
 type DayInformationContextType = {
     creditsAvailable: number,
-    gainCredits: (amount: number, action: 'gaining' | 'returning') => void
-    spendCredits: (amount: number, action: 'spending' | 'returning') => void
+    gainCredits: (amount: number, action: 'gaining' | 'returning') => void,
+    spendCredits: (amount: number, action: 'spending' | 'returning') => void,
+    increaseTotalMinutes: (min: number) => void,
+    increaseTotalCircles: () => void
 } & DayInformationType
 
 type DayInformationProviderPros = {
@@ -72,9 +74,26 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
         }
     }
 
+    const increaseTotalMinutes = (min: number) => {
+        setDayInformation(prev => {
+            return {
+                ...prev,
+                totalMinutes: prev.totalMinutes + min 
+            }
+        })
+    }
+
+    const increaseTotalCircles = () => {
+        setDayInformation(prev => {
+            return {
+                ...prev, 
+                totalCircles: prev.totalCircles + 1
+            }
+        })
+    }
 
     return (
-        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpended, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits }}>
+        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpended, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits, increaseTotalMinutes, increaseTotalCircles }}>
             {children}
         </DayInformationContext.Provider>
     )
