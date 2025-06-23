@@ -22,16 +22,16 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
         totalMinutes: 0,
         totalCircles: 0,
         creditsEarned: 0,
-        creditsSpended: 0,
+        creditsSpent: 0,
         rewardsRedeemed: 0
-    });
+    } as DayInformationType);
 
     const totalMinutes = dayInformation.totalMinutes;
     const totalCircles = dayInformation.totalCircles;
     const creditsEarned = dayInformation.creditsEarned;
-    const creditsSpended = dayInformation.creditsSpended;
+    const creditsSpent = dayInformation.creditsSpent;
     const rewardsRedeemed = dayInformation.rewardsRedeemed;
-    const creditsAvailable = creditsEarned - creditsSpended;
+    const creditsAvailable = creditsEarned - creditsSpent;
 
     const gainCredits = (amount: number, action: 'gaining' | 'returning') => {
         // is 'returning' if a checked task is being unchecked
@@ -58,7 +58,7 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
             setDayInformation(prev => {
                 return {
                     ...prev,
-                    creditsSpended: prev.creditsSpended + amount,
+                    creditsSpent: prev.creditsSpent + amount,
                     rewardsRedeemed: prev.rewardsRedeemed + 1
                 }
             })
@@ -66,7 +66,7 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
             setDayInformation(prev => {
                 return {
                     ...prev,
-                    creditsSpended: prev.creditsSpended - amount,
+                    creditsSpent: prev.creditsSpent - amount,
                     rewardsRedeemed: prev.rewardsRedeemed - 1
 
                 }
@@ -78,7 +78,7 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
         setDayInformation(prev => {
             return {
                 ...prev,
-                totalMinutes: prev.totalMinutes + min 
+                totalMinutes: prev.totalMinutes + min
             }
         })
     }
@@ -86,14 +86,14 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
     const increaseTotalCircles = () => {
         setDayInformation(prev => {
             return {
-                ...prev, 
+                ...prev,
                 totalCircles: prev.totalCircles + 1
             }
         })
     }
 
     return (
-        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpended, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits, increaseTotalMinutes, increaseTotalCircles }}>
+        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpent, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits, increaseTotalMinutes, increaseTotalCircles }}>
             {children}
         </DayInformationContext.Provider>
     )

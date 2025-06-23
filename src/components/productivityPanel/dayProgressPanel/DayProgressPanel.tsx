@@ -9,7 +9,7 @@ type DayProgressPanelProps = {
 }
 
 export default function DayProgressPanel({ panelIndex, selectedIndex }: DayProgressPanelProps) {
-    const { totalCircles, totalMinutes, creditsEarned, creditsSpended, rewardsRedeemed } = useContext(DayInformationContext);
+    const { totalCircles, totalMinutes, creditsEarned, creditsSpent, rewardsRedeemed } = useContext(DayInformationContext);
     const { totalTasks, completedTasks } = useContext(TasksContext);
     const taskCompletedPercentage = (completedTasks / totalTasks) * 100;
     const now = new Date();
@@ -44,7 +44,7 @@ export default function DayProgressPanel({ panelIndex, selectedIndex }: DayProgr
                 <li className={styles.numbers}><span className={styles.number}>{formatTime(totalMinutes)}</span>Time focused</li>
                 <li className={styles.numbers}><span className={styles.number}>{totalCircles}</span>Cycles</li>
                 <li className={styles.numbers}><span className={styles.number}>{creditsEarned}</span>CDR Earned</li>
-                <li className={styles.numbers}><span className={styles.number}>{creditsSpended}</span>CDR Spended</li>
+                <li className={styles.numbers}><span className={styles.number}>{creditsSpent}</span>CDR Spended</li>
                 <li className={styles.numbers}><span className={styles.number}>{rewardsRedeemed}</span>Rewards Redeemed</li>
             </ul>
             <div className={styles.tasksProgressContainer}>
