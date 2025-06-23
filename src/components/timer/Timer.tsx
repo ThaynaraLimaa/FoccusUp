@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { FormEvent, useContext, useEffect, useRef, useState } from 'react'
 import styles from './Timer.module.css'
 import { Slider } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,6 +6,7 @@ import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { formatNumberDigits } from '../../utils/formatNumber';
 import { timeBasedGreeting } from '../../utils/timeBasedGreeting';
 import { TimerState } from '../../App';
+import { DayInformationContext } from '../../context/DayInformationContext';
 
 type TimerProps = {
     username: string,
@@ -14,7 +15,8 @@ type TimerProps = {
 }
 
 export default function Timer({ username, timerState, setTimerState }: TimerProps) {
-    const [circleDuration, setCircleDuration] = useState<number>(1);
+    const [circleDuration, setCircleDuration] = useState<number>(45);
+    const { gainCredits, increaseTotalMinutes, increaseTotalCircles } = useContext(DayInformationContext);
     const [timeLeft, setTimeLeft] = useState(0);
     const [endHour, setEndHour] = useState('');
     const timerRef = useRef<number | null>(null);
@@ -36,16 +38,8 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
         };
     }, [timerState]);
 
-    // When circles ends 
-    if (timeLeft == 0 && timerState == 'running') {
-        alert('congratulations!! You finished a focus circle!');
-        clearInterval(timerRef.current!);
-        setTimerState('stopped');
-    }
-
-    const handleSliderChange = (e: Event, newValue: number) => {
-        setCircleDuration(newValue);
-    }
+    // Change circleDuration based on slider value 
+    const handleSliderChange = (e: Event, newValue: number) => { setCircleDuration(newValue); }
 
     // When new circle starts 
     const handleStartFocusCircle = (e: FormEvent) => {
@@ -75,6 +69,19 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
         }
     };
 
+    // When circles ends 
+    if (timeLeft == 0 && timerState == 'running') {
+        alert('congratulations!! You finished a focus circle!');
+
+        // Add more credits and update day stats 
+        gainCredits(calculateCreditsEarned(circleDuration), 'gaining'); 
+        increaseTotalCircles();
+        increaseTotalMinutes(circleDuration); 
+
+        clearInterval(timerRef.current!);
+        setTimerState('stopped');
+    }
+
     return (
         <>
             {timerState == 'stopped' ? (
@@ -87,7 +94,7 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
                         <Slider
                             aria-label='minutes'
                             value={circleDuration}
-                            min={15}
+                            min={3}
                             max={180}
                             onChange={handleSliderChange}
                             sx={{ width: '100%', height: 5, color: 'var(--color-primary)', }}
@@ -122,6 +129,7 @@ function convertSecondsToMinutes(secs: number) {
     return `${formatNumberDigits(minutes)}:${formatNumberDigits(seconds)}`
 }
 
+// Calculate the time circle will end 
 function calculateEndHour(min: number): string {
     const currentHour = new Date().getHours();
     const currentMinute = new Date().getMinutes();
@@ -139,4 +147,10 @@ function calculateEndHour(min: number): string {
     }
 
     return `${formatNumberDigits(endHour)}:${formatNumberDigits(endMinutes)}`
+}
+
+// Calculate how many credits earned based on a circle durarion 
+function calculateCreditsEarned(min: number) {
+    const minutesPerCredit = 15; 
+    return Math.floor(min / minutesPerCredit)
 }
