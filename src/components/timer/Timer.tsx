@@ -15,10 +15,10 @@ type TimerProps = {
 }
 
 export default function Timer({ username, timerState, setTimerState }: TimerProps) {
-    const [circleDuration, setCircleDuration] = useState<number>(45);
     const { gainCredits, increaseTotalMinutes, increaseTotalCircles } = useContext(DayInformationContext);
-    const [timeLeft, setTimeLeft] = useState(0);
-    const [endHour, setEndHour] = useState('');
+    const [circleDuration, setCircleDuration] = useState<number>(45); // state to control initial circle duration 
+    const [endTime, setEndTime] = useState(''); // state used to display time when circles ends 
+    const [secondsLeft, setSecondsLeft] = useState(0); // state uses to display the remaining time 
     const timerRef = useRef<number | null>(null);
 
     // Shows an alert if user tries to close the tab when timer is running 
@@ -45,13 +45,15 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
     // When new circle starts 
     const handleStartFocusCircle = (e: FormEvent) => {
         e.preventDefault();
-        setTimerState('running');
-        setEndHour(calculateEndHour(circleDuration));
-        setTimeLeft(circleDuration * 60); // converts circle duration from minutes to seconds 
+        setTimerState('running'); // change the timer state 
+        const circleEndDate = calculateEndTime(circleDuration); // Date object with when the circle ends 
+        setEndTime(`${formatNumberDigits(circleEndDate.getHours())}:${formatNumberDigits(circleEndDate.getMinutes())}`);
+
+        setSecondsLeft(circleDuration * 60); // converts circle duration from minutes to seconds 
 
         // start timer
         timerRef.current = setInterval(() => {
-            setTimeLeft((prev) => prev - 1)
+            setSecondsLeft(calculateTimeRemaining(circleEndDate))
         }, 1000);
     }
 
@@ -64,27 +66,30 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
 
         if (timerState == 'paused') {
             setTimerState('running');
+            const newCircleEndTime = calculateEndTime(secondsLeft / 60);
+            setEndTime(`${formatNumberDigits(newCircleEndTime.getHours())}:${formatNumberDigits(newCircleEndTime.getMinutes())}`);
+
             timerRef.current = setInterval(() => {
-                setTimeLeft((prev) => prev - 1)
+                setSecondsLeft(calculateTimeRemaining(newCircleEndTime))
             }, 1000);
         }
     };
 
     useEffect(() => {
         // When circles ends 
-    if (timeLeft == 0 && timerState == 'running') {
-        clearInterval(timerRef.current!);
-        setTimerState('stopped');
+        if (secondsLeft == 0 && timerState == 'running') {
+            clearInterval(timerRef.current!);
+            setTimerState('stopped');
 
-        alert('congratulations!! You finished a focus circle!');
+            alert('congratulations!! You finished a focus circle!');
 
-        // Add credits and update day stats 
-        gainCredits(calculateCreditsEarned(circleDuration), 'gaining'); 
-        increaseTotalCircles();
-        increaseTotalMinutes(circleDuration); 
+            // Add credits and update day stats 
+            gainCredits(calculateCreditsEarned(circleDuration), 'gaining');
+            increaseTotalCircles();
+            increaseTotalMinutes(circleDuration);
 
-    }
-    }, [timeLeft])
+        }
+    }, [secondsLeft])
 
     return (
         <>
@@ -110,15 +115,15 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
                 <div className={`${styles.timerContainer} ${styles.timerContainerFocusView}`}>
                     <p className={styles.message}>Let's focus, {username}</p>
                     <div className={`${styles.clock} ${styles.clockFocusView}`}>
-                        {convertSecondsToMinutes(timeLeft)}
+                        {convertSecondsToMinutes(secondsLeft)}
                     </div>
                     <div className={styles.progressContainer}>
-                        <div className={styles.progress} style={{ width: `${((timeLeft / (circleDuration * 60)) * 100)}%` }}></div>
+                        <div className={styles.progress} style={{ width: `${((secondsLeft / (circleDuration * 60)) * 100)}%` }}></div>
                     </div>
                     <button className={styles.button} onClick={handlePauseTimer}>
                         {timerState === 'running' ? 'Pause' : 'Start'}
                     </button>
-                    <p className={styles.endTime}><FontAwesomeIcon icon={faClock} /> Ends at {endHour}</p>
+                    <p className={styles.endTime}><FontAwesomeIcon icon={faClock} /> Ends at {endTime} </p>
                 </div>
             )
             }
@@ -133,24 +138,26 @@ function convertSecondsToMinutes(secs: number) {
     return `${formatNumberDigits(minutes)}:${formatNumberDigits(seconds)}`
 }
 
-// Calculate the time circle will end 
-function calculateEndHour(min: number): string {
-    const currentHour = new Date().getHours();
-    const currentMinute = new Date().getMinutes();
-    const hours = Math.floor(min / 60);
-    const minutes = min % 60;
+// Calculate when the time circle will end 
+function calculateEndTime(circleDurationInMin: number): Date {
+    const now = new Date().getTime();
+    const durationInMillis = circleDurationInMin * 1000 * 60;
+    const circlesEndsAt = now + durationInMillis;
+    const endCircleTime = new Date(circlesEndsAt);
 
-    let endHour = currentHour + hours < 23 ? currentHour + hours : (currentHour + hours) - 24
-    let endMinutes;
+    return endCircleTime
+}
 
-    if ((currentMinute + minutes) < 60) {
-        endMinutes = currentMinute + minutes
-    } else {
-        endMinutes = (currentMinute + minutes) % 60
-        endHour += 1
-    }
+function calculateTimeRemaining(endTime: Date) {
+    const now = new Date().getTime();
+    const endTimeInMillis = endTime.getTime();
+    const diff = endTimeInMillis - now;
 
-    return `${formatNumberDigits(endHour)}:${formatNumberDigits(endMinutes)}`
+    if (diff <= 0) return 0;
+
+    const secondsRemaining = Math.floor(diff / 1000)
+
+    return secondsRemaining
 }
 
 // Calculate how many credits earned based on a circle durarion 
