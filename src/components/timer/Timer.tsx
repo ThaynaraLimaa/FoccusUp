@@ -38,6 +38,7 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
         };
     }, [timerState]);
 
+
     // Change circleDuration based on slider value 
     const handleSliderChange = (e: Event, newValue: number) => { setCircleDuration(newValue); }
 
@@ -69,8 +70,12 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
         }
     };
 
-    // When circles ends 
+    useEffect(() => {
+        // When circles ends 
     if (timeLeft == 0 && timerState == 'running') {
+        clearInterval(timerRef.current!);
+        setTimerState('stopped');
+
         alert('congratulations!! You finished a focus circle!');
 
         // Add credits and update day stats 
@@ -78,9 +83,8 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
         increaseTotalCircles();
         increaseTotalMinutes(circleDuration); 
 
-        clearInterval(timerRef.current!);
-        setTimerState('stopped');
     }
+    }, [timeLeft])
 
     return (
         <>
