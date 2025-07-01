@@ -9,6 +9,7 @@ type DayInformationContextType = {
     spendCredits: (amount: number, action: 'spending' | 'returning') => void,
     increaseTotalMinutes: (min: number) => void,
     increaseTotalCircles: () => void
+    changeInformationValue: (key: keyof DayInformationType, newValue: number) => void
 } & DayInformationType
 
 type DayInformationProviderPros = {
@@ -33,8 +34,17 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
     const rewardsRedeemed = dayInformation.rewardsRedeemed;
     const creditsAvailable = creditsEarned - creditsSpent;
 
+    const changeInformationValue = (key: keyof DayInformationType, newValue: number) => {
+        setDayInformation(prev => {
+            return {
+                ...prev,
+                [key]: newValue
+            }
+        })
+    }
+
     const gainCredits = (amount: number, action: 'gaining' | 'returning') => {
-        // is 'returning' if a checked task is being unchecked
+        // it's 'returning' if a checked task is being unchecked
         if (action === 'gaining') {
             setDayInformation(prev => {
                 return {
@@ -93,7 +103,7 @@ export function DayInformationProvider({ children }: DayInformationProviderPros)
     }
 
     return (
-        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpent, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits, increaseTotalMinutes, increaseTotalCircles }}>
+        <DayInformationContext.Provider value={{ totalMinutes, totalCircles, creditsEarned, creditsSpent, rewardsRedeemed, creditsAvailable, gainCredits, spendCredits, increaseTotalMinutes, increaseTotalCircles, changeInformationValue }}>
             {children}
         </DayInformationContext.Provider>
     )
