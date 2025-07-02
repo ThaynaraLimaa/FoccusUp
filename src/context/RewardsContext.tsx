@@ -1,4 +1,4 @@
-import { createContext, ReactNode} from "react";
+import { createContext, ReactNode } from "react";
 import { Reward } from "../types/rewards";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { LocalStorageKeys } from "../constants/localStorageKeys";
@@ -8,7 +8,8 @@ type RewardsContextType = {
     rewards: Reward[],
     addReward: (name: string) => void
     toogleCollectReward: (id: string) => Reward | undefined
-    deleteReaward: (id: string) => void
+    deleteReaward: (id: string) => void,
+    resetAllRewards: () => void
 }
 
 export const RewardsContext = createContext({} as RewardsContextType);
@@ -38,8 +39,18 @@ export function RewardsProvider({ children }: { children: ReactNode }) {
         })
     }
 
+    const resetAllRewards = () => {
+        const updatedRewards = rewards.map(reward => {
+            return {
+                ...reward,
+                isCollected: false
+            }
+        })
+        setRewards(updatedRewards)
+    }
+
     return (
-        <RewardsContext.Provider value={{ rewards, addReward, toogleCollectReward, deleteReaward }}>
+        <RewardsContext.Provider value={{ rewards, addReward, toogleCollectReward, deleteReaward, resetAllRewards }}>
             {children}
         </RewardsContext.Provider>
     )
