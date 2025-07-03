@@ -4,21 +4,21 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Task as TaskData } from '../../../types/tasks'
 
 type TaskProps = {
-    handleToggleTaskComplete:  (id: string) => void,
-    handleDeleteTask:  (id: string) => void,
+    handleToggleTaskComplete: (id: string) => void,
+    handleDeleteTask: (id: string) => void,
 } & TaskData
 
-export default function Task({ id, name, duration, CDRValue, completed, handleDeleteTask, handleToggleTaskComplete}: TaskProps) {
- return (
+export default function Task({ id, name, duration, CDRValue, completed, handleDeleteTask, handleToggleTaskComplete }: TaskProps) {
+    return (
         <li className={styles.task}>
-            <div>
-                <input 
-                type="checkbox" 
-                name={`${id}-checkbox`} 
-                id={`${id}-checkbox`} 
-                className={styles.checkbox} 
-                checked={completed} 
-                onChange={() => handleToggleTaskComplete(id)}/>
+            <div className={styles.taskInfo}>
+                <input
+                    type="checkbox"
+                    name={`${id}-checkbox`}
+                    id={`${id}-checkbox`}
+                    className={styles.checkbox}
+                    checked={completed}
+                    onChange={() => handleToggleTaskComplete(id)} />
                 <label htmlFor={`${id}-checkbox`} className={styles.label}>
                     <span className={styles.customCheckbox}></span>
                     {name}
