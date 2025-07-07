@@ -69,3 +69,15 @@ body {
   justify-items: center;
   gap: 1rem;
 }
+
+@media (max-width: 1024px) {
+  :root {
+    --components-size: 80%
+  }
+}
+
+@media (max-width: 780px) {
+  :root {
+    --components-size: 95%
+  }
+}
