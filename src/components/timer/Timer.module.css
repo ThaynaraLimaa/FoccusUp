@@ -111,3 +111,14 @@
         width: var(--focus-view-elements-width)
     }
 }
+
+@media (max-width: 1280px) {
+  :root {
+    --elements-width: 40%
+  }
+}
+@media (max-width: 650px) {
+  :root {
+    --elements-width: 70%;
+  }
+}

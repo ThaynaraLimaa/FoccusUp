@@ -132,3 +132,11 @@
         }
     }
 }
+
+
+@media (max-width: 780px) {
+    .rewardsPanelContainer {
+        padding: 1.5rem 1rem;
+
+    }
+}

@@ -22,14 +22,18 @@
 }
 
 .progressNumbersContainer {
-    display: flex;
-    gap: 1.5rem;
+    /* display: flex;
+    gap: 1.5rem; */
+    /* width: 100%; */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 1rem;
 
     .numbers {
         background-color: var(--color-white);
         color: var(--color-black-50);
-        width: 25%;
-        padding: 2rem 0;
+        /* width: 25%; */
+        padding: 2rem 0.5rem;
         border-radius: 16px;
         font-size: 0.75rem;
         display: flex;
@@ -76,6 +80,24 @@
             bottom: 0;
         }
     }
+}
 
+@media (max-width: 780px) {
+    .dayProgressPanelContainer {
+        padding: 1.5rem 1rem;
+    }
 
+    .progressNumbersContainer {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 0.5rem;
+        row-gap: 0.5rem;
+
+        .numbers:first-child {
+            grid-column: span 2;
+        }
+    }
+
+    .tasksProgressContainer {
+        padding: 1.5rem;
+    }
 }

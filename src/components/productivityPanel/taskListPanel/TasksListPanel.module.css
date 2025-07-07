@@ -152,3 +152,10 @@
         }
     }
 }
+
+
+@media (max-width: 780px) {
+    .taskListPanelContainer {
+        padding: 1.5rem 1rem;
+    }
+}
