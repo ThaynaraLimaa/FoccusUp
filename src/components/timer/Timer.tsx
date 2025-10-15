@@ -40,7 +40,7 @@ export default function Timer({ username, timerState, setTimerState }: TimerProp
 
 
     // Change circleDuration based on slider value 
-    const handleSliderChange = (e: Event, newValue: number) => { setCircleDuration(newValue); }
+    const handleSliderChange = (_e: Event, newValue: number) => { setCircleDuration(newValue); }
 
     // When new circle starts 
     const handleStartFocusCircle = (e: FormEvent) => {

@@ -13,7 +13,7 @@ export default function ProductivityPanel() {
     const [foccusUpInformation, setFoccusUpInformation] = useLocalStorage(LocalStorageKeys.FoccusUpInformations, {} as FoccusUpInformations); 
     const resetData = useDataReset(); 
 
-    const handleTabChange = (e: SyntheticEvent, newIndex: number) => { setTabIndex(newIndex) };
+    const handleTabChange = (_e: SyntheticEvent, newIndex: number) => { setTabIndex(newIndex) };
 
     // Reset information when it's a new day 
     useEffect(() => {
