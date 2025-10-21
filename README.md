@@ -1,6 +1,8 @@
 # FoccusUp 
 FoccusUp is a minimalist productivity web app built with React that helps users stay focused on the present day. It features a simple *focus timer*, a *daily task list* that resets each day, a *reward system* based on earned credits, and a progress page to track focus time and completed goals.
 
+**Check the project live here:** [foccusup.vercel.app](https://foccusup.vercel.app/)
+
 ## 🛠️ Techlonogies Used 
 - React 
 - Typescript 
